@@ -1,0 +1,35 @@
+{
+  "name": "@pipeshift/indexer",
+  "version": "0.1.0",
+  "description": "Event indexer for Pipeshift settlement: decodes settled instructions and netting sessions into positions, volumes and compression reports.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "pipeshift-index": "./dist/cli.js"
+  },
+  "files": ["dist", "README.md"],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "npm run build && tsc --noEmit",
+    "test": "npm run build && node --test --experimental-strip-types test/*.test.ts",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["indexer", "settlement", "tokenized-equities", "netting", "robinhood-chain", "rwa"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pipeshiftprotocol/pipeshift-indexer.git"
+  },
+  "homepage": "https://pipeshift.trade",
+  "dependencies": {
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^22.7.0"
+  }
+}
