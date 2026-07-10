@@ -93,3 +93,18 @@ test("an unrelated log is ignored rather than guessed at", () => {
 
   assert.equal(decodeLog(foreign), undefined);
 });
+
+test("decodeLogs keeps only what it understands", () => {
+  const foreign: RawLog = {
+    address: ENGINE,
+    topics: ["0x" + "cd".repeat(32) as Hex32],
+    data: "0x",
+    blockNumber: 1n,
+    transactionHash: ID,
+    logIndex: 9,
+  };
+
+  const events = decodeLogs([sessionLog(2n, 40n), foreign], () => undefined);
+  assert.equal(events.length, 1);
+  assert.equal(events[0]?.kind, "session");
+});
