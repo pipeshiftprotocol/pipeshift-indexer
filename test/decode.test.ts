@@ -80,3 +80,16 @@ test("a session log decodes without an enricher", () => {
     assert.equal(event.session, 7n);
   }
 });
+
+test("an unrelated log is ignored rather than guessed at", () => {
+  const foreign: RawLog = {
+    address: ENGINE,
+    topics: ["0x" + "ab".repeat(32) as Hex32],
+    data: "0x",
+    blockNumber: 1n,
+    transactionHash: ID,
+    logIndex: 0,
+  };
+
+  assert.equal(decodeLog(foreign), undefined);
+});
