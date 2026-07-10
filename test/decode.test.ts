@@ -69,3 +69,14 @@ test("a settlement log is skipped when amounts are unavailable", () => {
   assert.equal(decodeLog(settlementLog()), undefined, "no enricher, no event");
   assert.equal(decodeLog(settlementLog(), () => undefined), undefined, "unknown instruction");
 });
+
+test("a session log decodes without an enricher", () => {
+  const event = decodeLog(sessionLog(6n, 12_000n));
+
+  assert.equal(event?.kind, "session");
+  if (event?.kind === "session") {
+    assert.equal(event.legs, 6);
+    assert.equal(event.grossTrades, 12_000);
+    assert.equal(event.session, 7n);
+  }
+});
