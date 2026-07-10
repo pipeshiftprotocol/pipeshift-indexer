@@ -94,3 +94,15 @@ export function decodeLog(log: RawLog, enrich?: Enricher): SettlementEvent | und
 
   return undefined;
 }
+
+/** Decodes a batch, dropping anything unrecognised. */
+export function decodeLogs(logs: readonly RawLog[], enrich?: Enricher): SettlementEvent[] {
+  const out: SettlementEvent[] = [];
+
+  for (const log of logs) {
+    const event = decodeLog(log, enrich);
+    if (event) out.push(event);
+  }
+
+  return out;
+}
