@@ -64,3 +64,8 @@ test("a settlement log decodes when amounts are supplied", () => {
     assert.equal(event.quantity, 400n);
   }
 });
+
+test("a settlement log is skipped when amounts are unavailable", () => {
+  assert.equal(decodeLog(settlementLog()), undefined, "no enricher, no event");
+  assert.equal(decodeLog(settlementLog(), () => undefined), undefined, "unknown instruction");
+});
