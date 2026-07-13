@@ -79,3 +79,14 @@ test("positions net out offsetting trades", () => {
   assert.equal(byParty.get(deskB)?.cash, -3_910n);
   assert.equal(byParty.get(deskA)?.trades, 2);
 });
+
+test("positions are kept separate per security", () => {
+  const events = [
+    settlement(deskA, deskB, 100n, 20_000n, 1_000n, AAPL),
+    settlement(deskA, deskB, 50n, 15_000n, 1_001n, TSLA),
+  ];
+
+  const positions = positionsOf(events);
+  assert.equal(positions.length, 4, "two parties in two securities");
+  assert.ok(positions.every((p) => p.trades === 1));
+});
