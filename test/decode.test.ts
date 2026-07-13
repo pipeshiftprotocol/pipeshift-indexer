@@ -108,3 +108,8 @@ test("decodeLogs keeps only what it understands", () => {
   assert.equal(events.length, 1);
   assert.equal(events[0]?.kind, "session");
 });
+
+test("a malformed session payload is dropped", () => {
+  const broken = { ...sessionLog(1n, 1n), data: "0xdeadbeef" as Hex32 };
+  assert.equal(decodeLog(broken), undefined);
+});
