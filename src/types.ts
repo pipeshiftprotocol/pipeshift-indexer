@@ -49,6 +49,19 @@ export interface Position {
 }
 
 /** Per security totals across the indexed range. */
+export interface SecurityStats {
+  security: Hex32;
+  settlements: number;
+  sessions: number;
+  /** Gross trades represented, counting netted trades individually. */
+  grossTrades: number;
+  volumeQuantity: bigint;
+  volumeConsideration: bigint;
+  parties: number;
+  firstBlock: bigint;
+  lastBlock: bigint;
+}
+
 /** How much movement netting removed across the indexed range. */
 export interface CompressionSummary {
   /** Trades that settled one by one. */
