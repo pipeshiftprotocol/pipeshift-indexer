@@ -6,7 +6,15 @@
  * cover the interesting cases without a node.
  */
 
-import type { Address, Hex32, Position, SettlementEvent } from "./types.js";
+import type {
+  Address,
+  CompressionSummary,
+  Hex32,
+  IndexState,
+  Position,
+  SecurityStats,
+  SettlementEvent,
+} from "./types.js";
 
 /** Sorts events into chain order: block, then log index. */
 export function inChainOrder(events: readonly SettlementEvent[]): SettlementEvent[] {
@@ -57,4 +65,51 @@ export function positionsOf(events: readonly SettlementEvent[]): Position[] {
   return [...positions.values()].sort((a, b) =>
     a.party.toLowerCase() < b.party.toLowerCase() ? -1 : 1,
   );
+}
+
+/** Per security totals across the events supplied. */
+export function statsOf(events: readonly SettlementEvent[]): SecurityStats[] {
+  const stats = new Map<Hex32, SecurityStats>();
+  const parties = new Map<Hex32, Set<string>>();
+
+  for (const event of events) {
+    let entry = stats.get(event.security);
+    if (!entry) {
+      entry = {
+        security: event.security,
+        settlements: 0,
+        sessions: 0,
+        grossTrades: 0,
+        volumeQuantity: 0n,
+        volumeConsideration: 0n,
+        parties: 0,
+        firstBlock: event.blockNumber,
+        lastBlock: event.blockNumber,
+      };
+      stats.set(event.security, entry);
+      parties.set(event.security, new Set());
+    }
+
+    if (event.blockNumber < entry.firstBlock) entry.firstBlock = event.blockNumber;
+    if (event.blockNumber > entry.lastBlock) entry.lastBlock = event.blockNumber;
+
+    if (event.kind === "settlement") {
+      entry.settlements += 1;
+      entry.grossTrades += 1;
+      entry.volumeQuantity += event.quantity;
+      entry.volumeConsideration += event.consideration;
+      parties.get(event.security)?.add(event.seller.toLowerCase());
+      parties.get(event.security)?.add(event.buyer.toLowerCase());
+    } else {
+      entry.sessions += 1;
+      entry.grossTrades += event.grossTrades;
+    }
+  }
+
+  for (const [security, set] of parties) {
+    const entry = stats.get(security);
+    if (entry) entry.parties = set.size;
+  }
+
+  return [...stats.values()].sort((a, b) => b.grossTrades - a.grossTrades);
 }
