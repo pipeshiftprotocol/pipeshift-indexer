@@ -105,3 +105,15 @@ test("stats count netted trades individually", () => {
   assert.equal(stats?.grossTrades, 901, "one settled plus 900 netted");
   assert.equal(stats?.parties, 2, "only settlements name parties");
 });
+
+test("stats track the block range per security", () => {
+  const events = [
+    settlement(deskA, deskB, 1n, 1n, 900n),
+    settlement(deskB, deskC, 1n, 1n, 1_500n),
+  ];
+  const [stats] = statsOf(events);
+
+  assert.equal(stats?.firstBlock, 900n);
+  assert.equal(stats?.lastBlock, 1_500n);
+  assert.equal(stats?.parties, 3);
+});
