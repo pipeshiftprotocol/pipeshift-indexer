@@ -95,3 +95,13 @@ test("sessions do not invent counterparties", () => {
   const events = [session(6, 12_000)];
   assert.deepEqual(positionsOf(events), [], "a session names no parties");
 });
+
+test("stats count netted trades individually", () => {
+  const events = [settlement(deskA, deskB, 10n, 100n), session(4, 900)];
+  const [stats] = statsOf(events);
+
+  assert.equal(stats?.settlements, 1);
+  assert.equal(stats?.sessions, 1);
+  assert.equal(stats?.grossTrades, 901, "one settled plus 900 netted");
+  assert.equal(stats?.parties, 2, "only settlements name parties");
+});
