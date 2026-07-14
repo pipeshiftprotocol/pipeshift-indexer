@@ -90,3 +90,8 @@ test("positions are kept separate per security", () => {
   assert.equal(positions.length, 4, "two parties in two securities");
   assert.ok(positions.every((p) => p.trades === 1));
 });
+
+test("sessions do not invent counterparties", () => {
+  const events = [session(6, 12_000)];
+  assert.deepEqual(positionsOf(events), [], "a session names no parties");
+});
