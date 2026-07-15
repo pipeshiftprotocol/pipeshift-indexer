@@ -143,3 +143,9 @@ test("compression is zero without netting", () => {
   const report = compressionOf([settlement(deskA, deskB, 1n, 1n)]);
   assert.equal(report.ratio, 0, "gross settlement removes nothing");
 });
+
+test("compression of an empty range does not divide by zero", () => {
+  const report = compressionOf([]);
+  assert.equal(report.ratio, 0);
+  assert.equal(report.transfers, 0);
+});
