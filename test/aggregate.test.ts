@@ -127,3 +127,14 @@ test("stats rank securities by gross trades", () => {
   const ranked = statsOf(events);
   assert.equal(ranked[0]?.security, TSLA, "500 netted trades outrank one settlement");
 });
+
+test("compression compares transfers against settling gross", () => {
+  const events = [settlement(deskA, deskB, 1n, 1n), session(6, 12_000)];
+  const report = compressionOf(events);
+
+  assert.equal(report.grossSettlements, 1);
+  assert.equal(report.nettedTrades, 12_000);
+  assert.equal(report.transfers, 14, "two for the settlement, twelve for six legs");
+  assert.equal(report.transfersIfGross, 24_002);
+  assert.ok(report.ratio > 0.999);
+});
