@@ -113,3 +113,30 @@ export function statsOf(events: readonly SettlementEvent[]): SecurityStats[] {
 
   return [...stats.values()].sort((a, b) => b.grossTrades - a.grossTrades);
 }
+
+/**
+ * Reports how many transfers netting removed.
+ *
+ * A settled instruction performs two transfers. A session performs two per leg
+ * while representing grossTrades trades, which would have been two transfers each.
+ */
+export function compressionOf(events: readonly SettlementEvent[]): CompressionSummary {
+  let grossSettlements = 0;
+  let nettedTrades = 0;
+  let transfers = 0;
+
+  for (const event of events) {
+    if (event.kind === "settlement") {
+      grossSettlements += 1;
+      transfers += 2;
+    } else {
+      nettedTrades += event.grossTrades;
+      transfers += event.legs * 2;
+    }
+  }
+
+  const transfersIfGross = (grossSettlements + nettedTrades) * 2;
+  const ratio = transfersIfGross === 0 ? 0 : 1 - transfers / transfersIfGross;
+
+  return { grossSettlements, nettedTrades, transfers, transfersIfGross, ratio };
+}
