@@ -117,3 +117,13 @@ test("stats track the block range per security", () => {
   assert.equal(stats?.lastBlock, 1_500n);
   assert.equal(stats?.parties, 3);
 });
+
+test("stats rank securities by gross trades", () => {
+  const events = [
+    settlement(deskA, deskB, 1n, 1n, 1_000n, AAPL),
+    session(2, 500, 1_001n, TSLA),
+  ];
+
+  const ranked = statsOf(events);
+  assert.equal(ranked[0]?.security, TSLA, "500 netted trades outrank one settlement");
+});
