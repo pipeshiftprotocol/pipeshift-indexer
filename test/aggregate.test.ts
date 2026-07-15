@@ -138,3 +138,8 @@ test("compression compares transfers against settling gross", () => {
   assert.equal(report.transfersIfGross, 24_002);
   assert.ok(report.ratio > 0.999);
 });
+
+test("compression is zero without netting", () => {
+  const report = compressionOf([settlement(deskA, deskB, 1n, 1n)]);
+  assert.equal(report.ratio, 0, "gross settlement removes nothing");
+});
