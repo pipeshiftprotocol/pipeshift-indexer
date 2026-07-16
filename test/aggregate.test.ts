@@ -149,3 +149,12 @@ test("compression of an empty range does not divide by zero", () => {
   assert.equal(report.ratio, 0);
   assert.equal(report.transfers, 0);
 });
+
+test("inChainOrder sorts by block then log index", () => {
+  const later = settlement(deskA, deskB, 1n, 1n, 2_000n);
+  const earlier = settlement(deskB, deskA, 1n, 1n, 1_000n);
+
+  const ordered = inChainOrder([later, earlier]);
+  assert.equal(ordered[0]?.blockNumber, 1_000n);
+  assert.equal(ordered[1]?.blockNumber, 2_000n);
+});
