@@ -16,12 +16,40 @@ import type {
   SettlementEvent,
 } from "./types.js";
 
+/** Thrown when events arrive out of order and would corrupt running totals. */
+export class OutOfOrderError extends Error {
+  readonly previous: bigint;
+  readonly current: bigint;
+
+  constructor(previous: bigint, current: bigint) {
+    super(`events must be ordered by block: saw ${current} after ${previous}`);
+    this.name = "OutOfOrderError";
+    this.previous = previous;
+    this.current = current;
+  }
+}
+
 /** Sorts events into chain order: block, then log index. */
 export function inChainOrder(events: readonly SettlementEvent[]): SettlementEvent[] {
   return [...events].sort((a, b) => {
     if (a.blockNumber !== b.blockNumber) return a.blockNumber < b.blockNumber ? -1 : 1;
     return a.logIndex - b.logIndex;
   });
+}
+
+/** Verifies events are already in chain order. */
+export function assertOrdered(events: readonly SettlementEvent[]): void {
+  let previous = -1n;
+  let previousIndex = -1;
+
+  for (const event of events) {
+    if (event.blockNumber < previous) throw new OutOfOrderError(previous, event.blockNumber);
+    if (event.blockNumber === previous && event.logIndex <= previousIndex) {
+      throw new OutOfOrderError(previous, event.blockNumber);
+    }
+    previous = event.blockNumber;
+    previousIndex = event.logIndex;
+  }
 }
 
 const positionKey = (party: Address, security: Hex32): string =>
