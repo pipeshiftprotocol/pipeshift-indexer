@@ -165,3 +165,10 @@ test("assertOrdered rejects a block going backwards", () => {
 
   assert.throws(() => assertOrdered([first, second]), OutOfOrderError);
 });
+
+test("assertOrdered rejects a repeated log index in one block", () => {
+  const a = { ...settlement(deskA, deskB, 1n, 1n, 5n), logIndex: 3 };
+  const b = { ...settlement(deskB, deskA, 1n, 1n, 5n), logIndex: 3 };
+
+  assert.throws(() => assertOrdered([a, b]), OutOfOrderError);
+});
