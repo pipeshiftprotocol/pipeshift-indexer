@@ -158,3 +158,10 @@ test("inChainOrder sorts by block then log index", () => {
   assert.equal(ordered[0]?.blockNumber, 1_000n);
   assert.equal(ordered[1]?.blockNumber, 2_000n);
 });
+
+test("assertOrdered rejects a block going backwards", () => {
+  const first = settlement(deskA, deskB, 1n, 1n, 2_000n);
+  const second = settlement(deskB, deskA, 1n, 1n, 1_000n);
+
+  assert.throws(() => assertOrdered([first, second]), OutOfOrderError);
+});
