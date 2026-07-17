@@ -185,3 +185,27 @@ export function stateOf(events: readonly SettlementEvent[]): IndexState {
     securities: securities.size,
   };
 }
+
+/** Parties whose net position is flat on both legs. */
+export function flatParties(positions: readonly Position[]): Position[] {
+  return positions.filter((p) => p.quantity === 0n && p.cash === 0n);
+}
+
+/** The largest net long and net short in a security, by quantity. */
+export function extremes(
+  positions: readonly Position[],
+  security: Hex32,
+): { longest?: Position; shortest?: Position } {
+  const relevant = positions.filter((p) => p.security.toLowerCase() === security.toLowerCase());
+  if (relevant.length === 0) return {};
+
+  let longest = relevant[0]!;
+  let shortest = relevant[0]!;
+
+  for (const position of relevant) {
+    if (position.quantity > longest.quantity) longest = position;
+    if (position.quantity < shortest.quantity) shortest = position;
+  }
+
+  return { longest, shortest };
+}
