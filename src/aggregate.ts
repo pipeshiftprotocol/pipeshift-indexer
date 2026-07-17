@@ -168,3 +168,20 @@ export function compressionOf(events: readonly SettlementEvent[]): CompressionSu
 
   return { grossSettlements, nettedTrades, transfers, transfersIfGross, ratio };
 }
+
+/** Summarises the indexed range. */
+export function stateOf(events: readonly SettlementEvent[]): IndexState {
+  if (events.length === 0) {
+    return { fromBlock: 0n, toBlock: 0n, events: 0, securities: 0 };
+  }
+
+  const ordered = inChainOrder(events);
+  const securities = new Set(ordered.map((e) => e.security.toLowerCase()));
+
+  return {
+    fromBlock: ordered[0]!.blockNumber,
+    toBlock: ordered[ordered.length - 1]!.blockNumber,
+    events: ordered.length,
+    securities: securities.size,
+  };
+}
