@@ -180,3 +180,16 @@ test("assertOrdered accepts a correctly ordered range", () => {
 
   assertOrdered([a, b, c]);
 });
+
+test("stateOf reports the indexed range", () => {
+  const events = [
+    settlement(deskA, deskB, 1n, 1n, 1_000n, AAPL),
+    settlement(deskB, deskC, 1n, 1n, 1_400n, TSLA),
+  ];
+
+  const state = stateOf(events);
+  assert.equal(state.fromBlock, 1_000n);
+  assert.equal(state.toBlock, 1_400n);
+  assert.equal(state.events, 2);
+  assert.equal(state.securities, 2);
+});
