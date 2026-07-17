@@ -193,3 +193,10 @@ test("stateOf reports the indexed range", () => {
   assert.equal(state.events, 2);
   assert.equal(state.securities, 2);
 });
+
+test("stateOf handles an empty range", () => {
+  const state = stateOf([]);
+  assert.equal(state.events, 0);
+  assert.equal(state.securities, 0);
+  assert.equal(state.fromBlock, 0n);
+});
