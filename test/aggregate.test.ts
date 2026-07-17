@@ -172,3 +172,11 @@ test("assertOrdered rejects a repeated log index in one block", () => {
 
   assert.throws(() => assertOrdered([a, b]), OutOfOrderError);
 });
+
+test("assertOrdered accepts a correctly ordered range", () => {
+  const a = { ...settlement(deskA, deskB, 1n, 1n, 5n), logIndex: 1 };
+  const b = { ...settlement(deskB, deskA, 1n, 1n, 5n), logIndex: 2 };
+  const c = { ...settlement(deskA, deskC, 1n, 1n, 6n), logIndex: 0 };
+
+  assertOrdered([a, b, c]);
+});
