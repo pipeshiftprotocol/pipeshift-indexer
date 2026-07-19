@@ -222,3 +222,8 @@ test("extremes finds the largest long and short", () => {
   assert.equal(shortest?.quantity, -700n);
   assert.equal(longest?.quantity, 500n);
 });
+
+test("extremes returns nothing for an unknown security", () => {
+  const result = extremes(positionsOf([settlement(deskA, deskB, 1n, 1n)]), TSLA);
+  assert.deepEqual(result, {});
+});
