@@ -210,3 +210,15 @@ test("flatParties finds desks that ended square", () => {
   const flat = flatParties(positionsOf(events));
   assert.equal(flat.length, 2, "a round trip leaves both desks flat");
 });
+
+test("extremes finds the largest long and short", () => {
+  const events = [
+    settlement(deskA, deskB, 500n, 100_000n),
+    settlement(deskA, deskC, 200n, 40_000n),
+  ];
+
+  const { longest, shortest } = extremes(positionsOf(events), AAPL);
+  assert.equal(shortest?.party, deskA, "deskA sold both");
+  assert.equal(shortest?.quantity, -700n);
+  assert.equal(longest?.quantity, 500n);
+});
