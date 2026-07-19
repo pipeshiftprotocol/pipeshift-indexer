@@ -200,3 +200,13 @@ test("stateOf handles an empty range", () => {
   assert.equal(state.securities, 0);
   assert.equal(state.fromBlock, 0n);
 });
+
+test("flatParties finds desks that ended square", () => {
+  const events = [
+    settlement(deskA, deskB, 100n, 20_000n),
+    settlement(deskB, deskA, 100n, 20_000n),
+  ];
+
+  const flat = flatParties(positionsOf(events));
+  assert.equal(flat.length, 2, "a round trip leaves both desks flat");
+});
