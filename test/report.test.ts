@@ -56,3 +56,8 @@ test("positionTable ranks by absolute quantity", () => {
   assert.match(lines[0]!, /party/);
   assert.equal(lines.length, 3, "header plus two parties");
 });
+
+test("positionTable can filter to one security", () => {
+  const other = "0x9999999999999999999999999999999999999999999999999999999999999999" as Hex32;
+  assert.equal(positionTable(events, other).split("\n").length, 1, "header only");
+});
