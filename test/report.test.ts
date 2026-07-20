@@ -42,3 +42,9 @@ test("summary reports the range and the compression", () => {
   assert.match(text, /netted trades {3}12000/);
   assert.match(text, /compression {5}99\.9\d%/);
 });
+
+test("summary of an empty range still renders", () => {
+  const text = summary([]);
+  assert.match(text, /events {10}0/);
+  assert.ok(!text.includes("security        trades"), "no table without data");
+});
