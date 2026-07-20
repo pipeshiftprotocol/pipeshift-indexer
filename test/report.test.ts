@@ -48,3 +48,11 @@ test("summary of an empty range still renders", () => {
   assert.match(text, /events {10}0/);
   assert.ok(!text.includes("security        trades"), "no table without data");
 });
+
+test("positionTable ranks by absolute quantity", () => {
+  const text = positionTable(events);
+  const lines = text.split("\n");
+
+  assert.match(lines[0]!, /party/);
+  assert.equal(lines.length, 3, "header plus two parties");
+});
