@@ -61,3 +61,12 @@ test("positionTable can filter to one security", () => {
   const other = "0x9999999999999999999999999999999999999999999999999999999999999999" as Hex32;
   assert.equal(positionTable(events, other).split("\n").length, 1, "header only");
 });
+
+test("positionsCsv emits one row per position", () => {
+  const csv = positionsCsv(positionsOf(events));
+  const rows = csv.split("\n");
+
+  assert.equal(rows[0], "party,security,quantity,cash,trades");
+  assert.equal(rows.length, 3);
+  assert.ok(rows[1]!.includes("400") || rows[2]!.includes("400"));
+});
