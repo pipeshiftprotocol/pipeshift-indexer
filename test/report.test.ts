@@ -70,3 +70,9 @@ test("positionsCsv emits one row per position", () => {
   assert.equal(rows.length, 3);
   assert.ok(rows[1]!.includes("400") || rows[2]!.includes("400"));
 });
+
+test("csv keeps amounts as integers, never as floats", () => {
+  const csv = positionsCsv(positionsOf(events));
+  assert.ok(!csv.includes("e+"), "no exponent notation");
+  assert.ok(!csv.includes("."), "no decimal point in base units");
+});
