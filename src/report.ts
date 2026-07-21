@@ -67,3 +67,12 @@ export function positionTable(events: readonly SettlementEvent[], security?: Hex
 
   return lines.join("\n");
 }
+
+/** One line per party for machine consumption. */
+export function positionsCsv(positions: readonly Position[]): string {
+  const rows = ["party,security,quantity,cash,trades"];
+  for (const p of positions) {
+    rows.push(`${p.party},${p.security},${p.quantity},${p.cash},${p.trades}`);
+  }
+  return rows.join("\n");
+}
