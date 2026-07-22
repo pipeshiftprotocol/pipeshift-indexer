@@ -1,0 +1,46 @@
+[
+  {
+    "kind": "settlement",
+    "id": "0x8fa6e2b2d6e2f8f9a1c4d3e5b7a9c1e3f5d7b9a1c3e5f7d9b1a3c5e7f9d1b3a5",
+    "security": "0x39095d275eb1261bd6276da1dd2eaaf6ad0ae3a60a9667abc65ac90d583b11ac",
+    "seller": "0x1111111111111111111111111111111111111111",
+    "buyer": "0x2222222222222222222222222222222222222222",
+    "quantity": "400000000000000000000",
+    "consideration": "82000000000",
+    "blockNumber": "8421100",
+    "txHash": "0xaaaa000000000000000000000000000000000000000000000000000000000001",
+    "logIndex": 0
+  },
+  {
+    "kind": "settlement",
+    "id": "0x8fa6e2b2d6e2f8f9a1c4d3e5b7a9c1e3f5d7b9a1c3e5f7d9b1a3c5e7f9d1b3a6",
+    "security": "0x39095d275eb1261bd6276da1dd2eaaf6ad0ae3a60a9667abc65ac90d583b11ac",
+    "seller": "0x2222222222222222222222222222222222222222",
+    "buyer": "0x3333333333333333333333333333333333333333",
+    "quantity": "150000000000000000000",
+    "consideration": "30800000000",
+    "blockNumber": "8421104",
+    "txHash": "0xaaaa000000000000000000000000000000000000000000000000000000000002",
+    "logIndex": 1
+  },
+  {
+    "kind": "session",
+    "session": "41",
+    "security": "0x39095d275eb1261bd6276da1dd2eaaf6ad0ae3a60a9667abc65ac90d583b11ac",
+    "legs": 6,
+    "grossTrades": 12000,
+    "blockNumber": "8421140",
+    "txHash": "0xaaaa000000000000000000000000000000000000000000000000000000000003",
+    "logIndex": 0
+  },
+  {
+    "kind": "session",
+    "session": "42",
+    "security": "0x5f2c1b8e7a9d3c4f6b8a0e2d4c6f8a0b2d4e6f8a0c2e4d6f8b0a2c4e6d8f0a2c",
+    "legs": 4,
+    "grossTrades": 3100,
+    "blockNumber": "8421187",
+    "txHash": "0xaaaa000000000000000000000000000000000000000000000000000000000004",
+    "logIndex": 0
+  }
+]
