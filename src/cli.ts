@@ -8,8 +8,8 @@
  */
 
 import { readFileSync } from "node:fs";
-import { inChainOrder } from "./aggregate.js";
-import { positionTable, summary } from "./report.js";
+import { assertOrdered, inChainOrder, positionsOf } from "./aggregate.js";
+import { positionTable, positionsCsv, summary } from "./report.js";
 import type { SettlementEvent } from "./types.js";
 
 const USAGE = `pipeshift-index <command> <events.json> [options]
@@ -17,6 +17,8 @@ const USAGE = `pipeshift-index <command> <events.json> [options]
 Commands
   summary <file>            Totals, compression and per security lines
   positions <file> [id]     Net positions, optionally for one security
+  csv <file>                Positions as csv on stdout
+  check <file>              Verify the file is in chain order
   help                      Show this message
 
 Event file
@@ -92,6 +94,18 @@ export function run(argv: readonly string[]): number {
         if (!file) throw new TypeError("positions requires an event file");
         const events = inChainOrder(parseEvents(readFileSync(file, "utf8")));
         console.log(positionTable(events, extra as SettlementEvent["security"] | undefined));
+        return 0;
+      }
+      case "csv": {
+        if (!file) throw new TypeError("csv requires an event file");
+        const events = inChainOrder(parseEvents(readFileSync(file, "utf8")));
+        console.log(positionsCsv(positionsOf(events)));
+        return 0;
+      }
+      case "check": {
+        if (!file) throw new TypeError("check requires an event file");
+        assertOrdered(parseEvents(readFileSync(file, "utf8")));
+        console.log("ordered");
         return 0;
       }
       case "help":

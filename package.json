@@ -1,6 +1,6 @@
 {
   "name": "@pipeshift/indexer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Event indexer for Pipeshift settlement: decodes settled instructions and netting sessions into positions, volumes and compression reports.",
   "license": "MIT",
   "type": "module",
