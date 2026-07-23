@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["20", "22"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Test
+        run: node --test --experimental-strip-types test/*.test.ts
+      - name: Smoke test the CLI
+        run: |
+          node dist/cli.js summary examples/events.json
+          node dist/cli.js positions examples/events.json
+          node dist/cli.js check examples/events.json
