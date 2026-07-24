@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/banner.jpg" alt="Pipeshift" width="100%">
+
 ### Event indexer for Pipeshift settlement
 
 Turns settled instructions and netting sessions into positions, volumes and compression.
@@ -31,3 +33,40 @@ against settling everything gross.
 
 Read only by construction. There is no signer in this package and nothing here can send a
 transaction.
+
+## CLI
+
+```bash
+$ pipeshift-index summary examples/events.json
+blocks          8421100 .. 8421187
+events          4
+securities      2
+settlements     2
+netted trades   15100
+transfers       24
+if settled gross 30204
+compression     99.92%
+
+security        trades  parties          quantity volume
+0x39095d27..11ac 12002        3     550000000000000000000
+0x5f2c1b8e..0a2c  3100        0                         0
+```
+
+```bash
+$ pipeshift-index positions examples/events.json
+party                       trades                    quantity                cash
+0x111111111111111111..1111     1      -400000000000000000000         82000000000
+0x222222222222222222..2222     2       250000000000000000000        -51200000000
+0x333333333333333333..3333     1       150000000000000000000        -30800000000
+```
+
+| Command | What it does |
+|---|---|
+| `summary <file>` | Range, totals, compression, per security lines |
+| `positions <file> [security]` | Net positions, ranked by absolute quantity |
+| `csv <file>` | Positions as csv on stdout |
+| `check <file>` | Verifies the file is in chain order |
+
+The CLI reads a file of decoded events rather than talking to a node itself. That keeps a
+report reproducible from an input you can commit and review, instead of depending on
+whatever an RPC returned that afternoon.
