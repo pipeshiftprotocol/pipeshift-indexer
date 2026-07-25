@@ -88,3 +88,22 @@ console.log(`${compression.transfers} transfers instead of ${compression.transfe
 `decodeLogs` takes an enricher because `InstructionSettled` indexes the parties but not the
 amounts: amounts live in the stored instruction. A log whose amounts cannot be resolved is
 skipped rather than recorded with zeros.
+
+## Design notes
+
+**Sessions do not name their counterparties.** `SessionSettled` reports how many legs moved
+and how many trades that represented, not who was on each side. So sessions contribute to
+volume and compression but never to positions. Splitting a session across parties would mean
+inventing counterparties the log does not name.
+
+**Aggregation is pure.** No chain access, no clock, no I/O below the CLI. Every number this
+package produces is a function of the events handed to it, which is why the tests cover the
+interesting cases without a node.
+
+**Order is checked, not assumed.** `assertOrdered` rejects a block going backwards or a
+repeated log index inside one block, because a silently reordered range produces plausible
+and wrong running totals.
+
+**Amounts stay bigint.** Nothing in the pipeline converts an amount to a number, and the CLI
+rejects number literals in input files. A float that reaches a settlement figure is a
+position break waiting to be found.
