@@ -107,3 +107,21 @@ and wrong running totals.
 **Amounts stay bigint.** Nothing in the pipeline converts an amount to a number, and the CLI
 rejects number literals in input files. A float that reaches a settlement figure is a
 position break waiting to be found.
+
+## What this cannot do
+
+- It does not fetch logs. Feed it logs from viem, ethers, or a JSON file.
+- It has no database. State is derived from the events you supply, every run.
+- It does not track cash balances outside settled trades, so a desk funding its account is invisible here.
+- It cannot attribute a netting session to individual desks. See the design note above.
+- Nothing is deployed to Robinhood Chain mainnet yet, so in practice this runs against test data today.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+<div align="center">
+
+[pipeshift.trade](https://pipeshift.trade) · [@pipeshift_ai](https://x.com/pipeshift_ai) · [main repo](https://github.com/pipeshiftprotocol/pipeshift)
+
+</div>
