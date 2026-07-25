@@ -70,3 +70,21 @@ party                       trades                    quantity                ca
 The CLI reads a file of decoded events rather than talking to a node itself. That keeps a
 report reproducible from an input you can commit and review, instead of depending on
 whatever an RPC returned that afternoon.
+
+## Library
+
+```ts
+import { compressionOf, decodeLogs, positionsOf, statsOf } from "@pipeshift/indexer";
+
+const events = decodeLogs(logs, (id) => instructionCache.get(id));
+
+const positions = positionsOf(events);
+const perSecurity = statsOf(events);
+const compression = compressionOf(events);
+
+console.log(`${compression.transfers} transfers instead of ${compression.transfersIfGross}`);
+```
+
+`decodeLogs` takes an enricher because `InstructionSettled` indexes the parties but not the
+amounts: amounts live in the stored instruction. A log whose amounts cannot be resolved is
+skipped rather than recorded with zeros.
