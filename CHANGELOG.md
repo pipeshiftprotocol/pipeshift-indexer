@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.3.0] - 2026-07-30
+
+### Added
+- `fetch.ts`: live log reading over JSON-RPC with adaptive chunking, so a provider that
+  rejects a range degrades into more requests rather than an error.
+- `chain.ts`: Robinhood Chain definition and a read only client. There is still no wallet
+  client anywhere in the package.
+- An enricher that reads amounts back from the settlement engine, cached per instruction id,
+  because `InstructionSettled` indexes the parties but not the amounts.
+- CLI `fetch` command that writes a live range out as an event file.
+- End to end suite: deploys an emitter fixture to a real node, sends real transactions and
+  reads them back through the production path.
+
+### Fixed
+- A range past the head of the chain now returns nothing instead of surfacing the provider's
+  rejection as `RangeTooWideError`.
+
 ## [0.2.0] - 2026-07-29
 
 ### Added

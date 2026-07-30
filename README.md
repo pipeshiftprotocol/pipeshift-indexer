@@ -8,7 +8,8 @@ Turns settled instructions and netting sessions into positions, volumes and comp
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-0AE8A6.svg?style=flat-square)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/typescript-5.6-0AE8A6.svg?style=flat-square)](package.json)
-[![Tests](https://img.shields.io/badge/tests-30%20passing-0AE8A6.svg?style=flat-square)](.github/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-38%20passing-0AE8A6.svg?style=flat-square)](.github/workflows/ci.yml)
+[![E2E](https://img.shields.io/badge/e2e-live%20node-0AE8A6.svg?style=flat-square)](e2e)
 [![Chain](https://img.shields.io/badge/chain-Robinhood%20Chain-221B1D.svg?style=flat-square)](https://pipeshift.trade)
 
 [**What it does**](#what-it-does) ·
@@ -71,6 +72,35 @@ The CLI reads a file of decoded events rather than talking to a node itself. Tha
 report reproducible from an input you can commit and review, instead of depending on
 whatever an RPC returned that afternoon.
 
+## Reading a live chain
+
+```bash
+export PIPESHIFT_RPC_URL=https://rpc.mainnet.chain.robinhood.com
+export PIPESHIFT_CHAIN_ID=4663
+export PIPESHIFT_SETTLEMENT_ENGINE=0x...
+export PIPESHIFT_NETTING_ENGINE=0x...
+export PIPESHIFT_ASSET_REGISTRY=0x...
+
+pipeshift-index fetch events.json 8400000    # from block, defaults to PIPESHIFT_FROM_BLOCK
+pipeshift-index summary events.json
+```
+
+`fetch` walks the range in chunks, halving a chunk whenever the provider rejects it, so a
+public endpoint with an undocumented limit degrades into more requests rather than an error.
+Ranges past the head are clamped instead of rejected. Amounts that the event does not carry
+are read back from the settlement engine and cached per instruction id.
+
+### End to end
+
+```bash
+npm run e2e:full
+```
+
+Starts anvil, deploys the [emitter fixture](e2e/fixtures/Emitter.sol), sends real
+transactions, then reads them back through the same path production uses. It asserts that
+positions computed from the chain match the ones computed from a file, that amounts absent
+from the log are recovered from storage, and that a chunk size of one block loses nothing.
+
 ## Library
 
 ```ts
@@ -110,7 +140,7 @@ position break waiting to be found.
 
 ## What this cannot do
 
-- It does not fetch logs. Feed it logs from viem, ethers, or a JSON file.
+- It fetches logs over plain JSON-RPC. There is no websocket subscription and no reorg handling: a range is read once, as it stood at the head when asked.
 - It has no database. State is derived from the events you supply, every run.
 - It does not track cash balances outside settled trades, so a desk funding its account is invisible here.
 - It cannot attribute a netting session to individual desks. See the design note above.

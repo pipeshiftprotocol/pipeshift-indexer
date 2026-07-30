@@ -36,3 +36,21 @@ jobs:
           node dist/cli.js summary examples/events.json
           node dist/cli.js positions examples/events.json
           node dist/cli.js check examples/events.json
+
+  e2e:
+    name: End to end on a live node
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      # Deploys the emitter fixture to a local anvil, sends real transactions and
+      # reads them back through getLogs, the enricher and the aggregation layer.
+      - name: Index a real node
+        run: npm run e2e:full
